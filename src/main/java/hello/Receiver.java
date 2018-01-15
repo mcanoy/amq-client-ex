@@ -15,6 +15,7 @@ import javax.jms.MapMessage;
 /**
  * Receives JMS messages from the configured queue using the configured selector.
  */
+@Component
 public class Receiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
