@@ -16,7 +16,7 @@ public class SendMessageController {
     }
     
     @RequestMapping( value = "/test")
-    public ResponseEntity<String> sendMessage(@RequestParam(name="message") String message) {
+    public ResponseEntity<String> sendMessage(@RequestParam(name="message", required = false) String message) {
         
         if(message == null) {
             message = "hi";
