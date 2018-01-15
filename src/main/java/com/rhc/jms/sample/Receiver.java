@@ -1,16 +1,9 @@
-package hello;
+package com.rhc.jms.sample;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CountDownLatch;
-
-import javax.jms.MapMessage;
 
 /**
  * Receives JMS messages from the configured queue using the configured selector.

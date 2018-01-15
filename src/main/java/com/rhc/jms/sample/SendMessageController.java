@@ -1,4 +1,4 @@
-package hello;
+package com.rhc.jms.sample;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
