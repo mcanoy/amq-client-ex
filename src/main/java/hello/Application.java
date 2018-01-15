@@ -23,11 +23,6 @@ public class Application {
     @Value("${sleepTime:0}")
     long sleepTimeInMs;
 
-    @Bean
-    @Profile("sender")
-    Sender sender(JmsTemplate jmsTemplate) {
-        return new Sender(jmsTemplate, queueName, sleepTimeInMs);
-    }
 
     public static void main(String[] args) {
         // Clean out any ActiveMQ data from a previous run
@@ -38,23 +33,19 @@ public class Application {
         final ConfigurableEnvironment environment = context.getEnvironment();
         final String[] activeProfiles = environment.getActiveProfiles();
         System.out.println("Profiles");
+        System.out.println(environment.getProperty("jms.queueName"));
         for (String profile : activeProfiles) {
             System.out.println("  - " + profile);
         }
-        System.out.println("press CTRL-C to exit, using queue " + environment.getProperty("jms.queueName"));
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static float calculateMessagesPerSeconds(long start, long i) {
-        float messagesPerSecond;
-        long now = System.currentTimeMillis();
-        final long duration = Math.max(1, now - start);
-        messagesPerSecond = 1000 * (i + 1) / duration;
-        return messagesPerSecond;
+        //System.out.println("press CTRL-C to exit, using queue " + environment.getProperty("jms.queueName"));
+     //   try {
+     //       System.in.read();
+     //   } catch (IOException e) {
+     //       e.printStackTrace();
+     //   }
     }
+    
+    
 
 }
