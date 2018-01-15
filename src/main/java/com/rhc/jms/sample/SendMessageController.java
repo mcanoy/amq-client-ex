@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class SendMessageController {
@@ -15,10 +16,16 @@ public class SendMessageController {
     }
     
     @RequestMapping( value = "/test")
-    public ResponseEntity<String> sendMessage() {
+    public ResponseEntity<String> sendMessage(@RequestParam(name="message") String message) {
         
-        sender.send("hi " + System.currentTimeMillis());
+        if(message == null) {
+            message = "hi";
+        }
         
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        String queueMessage = String.format("%s (%d%n)", message, System.currentTimeMillis()); 
+        
+        sender.send(queueMessage);
+        
+        return new ResponseEntity<>(queueMessage, HttpStatus.OK);
     }
 }

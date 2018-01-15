@@ -11,9 +11,9 @@ Works with
 
 * ActiveMQ
 
-## Running the application
+## Running the Application
 
-Deploy on Openshift with the base Red Hat OpenJdk 8 image
+Deploy on Openshift with the base Red Hat OpenJDK 8 image
 
 Configure these parameters:
 

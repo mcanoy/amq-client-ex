@@ -8,7 +8,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * Sends 100K JMS messages.
+ * Sends 1 JMS message.
  */
 @Component
 public class Sender {
