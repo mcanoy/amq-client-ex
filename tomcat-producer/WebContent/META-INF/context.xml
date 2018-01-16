@@ -1,0 +1,22 @@
+<Context>
+
+    <Resource name="jms/queue/test-queue"
+        auth="Container"
+        type="org.apache.activemq.command.ActiveMQQueue"
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+        queueName="test-queue"
+        physicalName="test-queue"/>
+    
+    <Resource
+        name="jms/ConnectionFactory"
+        auth="Container"
+        type="org.apache.activemq.ActiveMQConnectionFactory"
+        description="JMS Connection Factory"
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory"
+        brokerURL="tcp://amq-broker-amq-tcp:61616"
+        userName="amq_user"
+        password="amq_pass"
+        brokerName="LocalActiveMQBroker"
+        useEmbeddedBroker="false"/>
+
+</Context>

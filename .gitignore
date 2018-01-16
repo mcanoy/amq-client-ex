@@ -1,4 +1,5 @@
-/target/
+**/target/
+tomcat-producer/openshift/
 .classpath
 .settings/
 .project
