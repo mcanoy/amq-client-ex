@@ -40,12 +40,11 @@ node (''){
     
 }
 
-
 /**
     this section of the pipeline executes on a custom mvn build slave.
     you should not need to change anything below unless you need new stages or new integrations (e.g. Cucumber Reports or Sonar)
 **/
-node('mvn-build-pod') {
+node('mvn-build-slave') {
 
   stage('SCM Checkout') {
     checkout scm
@@ -55,15 +54,15 @@ node('mvn-build-pod') {
     stage('Build App') {
       
       // verify nexus is up or the build will fail with a strange error
-      openshiftVerifyDeployment ( 
-                        apiURL: "${env.OCP_API_SERVER}", 
-                        authToken: "${env.OCP_TOKEN}", 
-                        depCfg: 'nexus', 
-                        namespace: 'labs-ci-cd', 
-                        verifyReplicaCount: true,
-                        waitTime: '3', 
-                        waitUnit: 'min'
-                    )  
+//      openshiftVerifyDeployment ( 
+//                        apiURL: "${env.OCP_API_SERVER}", 
+//                        authToken: "${env.OCP_TOKEN}", 
+//                        depCfg: 'nexus', 
+//                        namespace: 'labs-ci-cd', 
+//                        verifyReplicaCount: true,
+//                        waitTime: '3', 
+//                        waitUnit: 'min'
+//                    )  
         
       sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
     }
