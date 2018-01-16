@@ -64,6 +64,7 @@ node('mvn-build-slave') {
 //                        waitUnit: 'min'
 //                    )  
         
+      sh "cd spring-boot"
       sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
     }
 
