@@ -16,7 +16,7 @@ node (''){
     env.UBER_JAR_CONTEXT_DIR = "target/"
 
     // this value will be passed to the mvn command - it should include switches like -D and -P
-    env.MVN_COMMAND = "clean deploy"
+    env.MVN_COMMAND = " -f spring-boot clean deploy"
 
      /**
     these are used to configure which repository maven deploys
@@ -65,7 +65,7 @@ node('mvn-build-slave') {
 //                    )  
         
       sleep 600
-      sh "mvn -f spring-boot ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
+      sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
     }
 
     // assumes uber jar is created
