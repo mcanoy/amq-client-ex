@@ -11,12 +11,12 @@ node (''){
 
     // this value should be set to the root directory of your source code within the git repository.
     // if the root of the source is the root of the repo, leave this value as ""
-    env.SOURCE_CONTEXT_DIR = ""
+    env.SOURCE_CONTEXT_DIR = "spring-boot"
     // this value is relative to env.SOURCE_CONTEXT_DIR, and should be set to location where mvn will build the uber-jar
     env.UBER_JAR_CONTEXT_DIR = "target/"
 
     // this value will be passed to the mvn command - it should include switches like -D and -P
-    env.MVN_COMMAND = " -f spring-boot clean deploy"
+    env.MVN_COMMAND = "clean deploy"
 
      /**
     these are used to configure which repository maven deploys
@@ -64,7 +64,6 @@ node('mvn-build-slave') {
 //                        waitUnit: 'min'
 //                    )  
         
-      sleep 600
       sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
     }
 
