@@ -64,6 +64,7 @@ node('mvn-build-slave') {
 //                        waitUnit: 'min'
 //                    )  
         
+      sleep 600
       sh "mvn -f spring-boot ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
     }
 
