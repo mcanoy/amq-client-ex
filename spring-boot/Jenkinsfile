@@ -46,48 +46,59 @@ node (''){
 **/
 node('mvn-build-slave') {
 
-  stage('SCM Checkout') {
-    checkout scm
-  }
+  try {
+    slackSend "Merge Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
 
-  dir ("${env.SOURCE_CONTEXT_DIR}") {
-    stage('Build App') {
-      
-      // verify nexus is up or the build will fail with a strange error
-//      openshiftVerifyDeployment ( 
-//                        apiURL: "${env.OCP_API_SERVER}", 
-//                        authToken: "${env.OCP_TOKEN}", 
-//                        depCfg: 'nexus', 
-//                        namespace: 'labs-ci-cd', 
-//                        verifyReplicaCount: true,
-//                        waitTime: '3', 
-//                        waitUnit: 'min'
-//                    )  
+    stage('SCM Checkout') {
+      checkout scm
+    }
+
+    dir ("${env.SOURCE_CONTEXT_DIR}") {
+      stage('Build App') {
+
+      slackSend "Merge Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         
-      sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
+        // verify nexus is up or the build will fail with a strange error
+  //      openshiftVerifyDeployment ( 
+  //                        apiURL: "${env.OCP_API_SERVER}", 
+  //                        authToken: "${env.OCP_TOKEN}", 
+  //                        depCfg: 'nexus', 
+  //                        namespace: 'labs-ci-cd', 
+  //                        verifyReplicaCount: true,
+  //                        waitTime: '3', 
+  //                        waitUnit: 'min'
+  //                    )  
+          
+        sh "mvn ${env.MVN_COMMAND} -DaltDeploymentRepository=${MVN_SNAPSHOT_DEPLOYMENT_REPOSITORY}"
+      }
+
+      // assumes uber jar is created
+      stage('Build Image') {
+        sh "oc start-build ${env.APP_NAME} --from-dir=${env.UBER_JAR_CONTEXT_DIR} --follow"
+      }
     }
 
-    // assumes uber jar is created
-    stage('Build Image') {
-      sh "oc start-build ${env.APP_NAME} --from-dir=${env.UBER_JAR_CONTEXT_DIR} --follow"
+    // no user changes should be needed below this point
+    stage ('Deploy to Dev') {
+      input "Promote Application to Dev?"
+
+      openshiftTag (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", destStream: "${env.APP_NAME}", destTag: 'latest', destinationAuthToken: "${env.OCP_TOKEN}", destinationNamespace: "${env.DEV_PROJECT}", namespace: "${env.OPENSHIFT_BUILD_NAMESPACE}", srcStream: "${env.APP_NAME}", srcTag: 'latest')
+
+      openshiftVerifyDeployment (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", depCfg: "${env.APP_NAME}", namespace: "${env.DEV_PROJECT}", verifyReplicaCount: true)
     }
-  }
 
-  // no user changes should be needed below this point
-  stage ('Deploy to Dev') {
-    input "Promote Application to Dev?"
+    stage ('Deploy to UAT') {
+      input "Promote Application to Demo?"
 
-    openshiftTag (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", destStream: "${env.APP_NAME}", destTag: 'latest', destinationAuthToken: "${env.OCP_TOKEN}", destinationNamespace: "${env.DEV_PROJECT}", namespace: "${env.OPENSHIFT_BUILD_NAMESPACE}", srcStream: "${env.APP_NAME}", srcTag: 'latest')
+      openshiftTag (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", destStream: "${env.APP_NAME}", destTag: 'latest', destinationAuthToken: "${env.OCP_TOKEN}", destinationNamespace: "${env.UAT_PROJECT}", namespace: "${env.DEV_PROJECT}", srcStream: "${env.APP_NAME}", srcTag: 'latest')
 
-    openshiftVerifyDeployment (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", depCfg: "${env.APP_NAME}", namespace: "${env.DEV_PROJECT}", verifyReplicaCount: true)
-  }
-
-  stage ('Deploy to UAT') {
-    input "Promote Application to Demo?"
-
-    openshiftTag (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", destStream: "${env.APP_NAME}", destTag: 'latest', destinationAuthToken: "${env.OCP_TOKEN}", destinationNamespace: "${env.UAT_PROJECT}", namespace: "${env.DEV_PROJECT}", srcStream: "${env.APP_NAME}", srcTag: 'latest')
-
-    openshiftVerifyDeployment (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", depCfg: "${env.APP_NAME}", namespace: "${env.UAT_PROJECT}", verifyReplicaCount: true)
+      openshiftVerifyDeployment (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", depCfg: "${env.APP_NAME}", namespace: "${env.UAT_PROJECT}", verifyReplicaCount: true)
+    }
+    
+    slackSend color: "good", message: ":success: Merge Build Completed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+  } catch (Exception ex) {
+     slackSend color: "danger", message: ":epic_fail: Merge Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
   }
 
 }
+
