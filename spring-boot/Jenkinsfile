@@ -55,9 +55,7 @@ node('mvn-build-slave') {
 
     dir ("${env.SOURCE_CONTEXT_DIR}") {
       stage('Build App') {
-
-      slackSend "Merge Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
-        
+ 
         // verify nexus is up or the build will fail with a strange error
   //      openshiftVerifyDeployment ( 
   //                        apiURL: "${env.OCP_API_SERVER}", 
