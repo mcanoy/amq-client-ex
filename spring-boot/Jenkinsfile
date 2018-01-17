@@ -47,7 +47,7 @@ node (''){
 node('mvn-build-slave') {
 
   try {
-    slackSend "Merge Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
 
     stage('SCM Checkout') {
       checkout scm
@@ -93,9 +93,9 @@ node('mvn-build-slave') {
       openshiftVerifyDeployment (apiURL: "${env.OCP_API_SERVER}", authToken: "${env.OCP_TOKEN}", depCfg: "${env.APP_NAME}", namespace: "${env.UAT_PROJECT}", verifyReplicaCount: true)
     }
     
-    slackSend color: "good", message: ":success: Merge Build Completed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    slackSend color: "good", message: ":success: Build Completed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
   } catch (Exception ex) {
-     slackSend color: "danger", message: ":epic_fail: Merge Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+     slackSend color: "danger", message: ":epic_fail: Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
   }
 
 }
