@@ -25,7 +25,7 @@ public class MessageSenderController {
    
     @RequestMapping("/amq")
     public ModelAndView amqMessage() {
-  
+
         String error = "";
         
         try {
@@ -46,6 +46,7 @@ public class MessageSenderController {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
+            System.getProperties().list(pw);
             error = sw.toString();
         }
  

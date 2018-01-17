@@ -4,8 +4,8 @@
         auth="Container"
         type="org.apache.activemq.command.ActiveMQQueue"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory"
-        queueName="test-queue"
-        physicalName="test-queue"/>
+        queueName="${QUEUE_NAME}"
+        physicalName="${QUEUE_NAME}"/>
     
     <Resource
         name="jms/ConnectionFactory"
@@ -13,9 +13,9 @@
         type="org.apache.activemq.ActiveMQConnectionFactory"
         description="JMS Connection Factory"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory"
-        brokerURL="tcp://amq-broker-amq-tcp:61616"
-        userName="amq_user"
-        password="amq_pass"
+        brokerURL="${BROKER_URL}"
+        userName="${AMQ_USER}"
+        password="${AMQ_PASSWORD}"
         brokerName="LocalActiveMQBroker"
         useEmbeddedBroker="false"/>
 
